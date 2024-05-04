@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
 import './App.css';
+import { fetchJobs } from './services/jobService';
+import JobCard from './components/jobCard';
 
 function App() {
+  const [jobs, setJobs] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const jobList = await fetchJobs();
+      setJobs(jobList);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Job Listings</h1>
+      <div className="job-container">
+        {jobs.length > 0 ? (
+          jobs.map((job, index) => (
+            <JobCard key={index} job={job} />
+          ))
+        ) : (
+          <p>No jobs found</p>
+        )}
+      </div>
     </div>
   );
 }
